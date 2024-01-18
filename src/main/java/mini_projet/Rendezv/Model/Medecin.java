@@ -1,4 +1,4 @@
-package Model;
+package mini_projet.Rendezv.Model;
 
 import lombok.Data;
 

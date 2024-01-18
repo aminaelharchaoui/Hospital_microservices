@@ -1,11 +1,10 @@
-package Model;
+package mini_projet.Rendezv.Model;
 
 
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 import java.util.List;
-
 @Data
 public class Patient {
     private long id;
