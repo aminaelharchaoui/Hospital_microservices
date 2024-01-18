@@ -1,35 +1,38 @@
-package controller;
+package mini_projet.PatMedservice.controller;
 
-import Model.RvC;
-import client.RvCRestClient;
-import entity.Medecin;
+import mini_projet.PatMedservice.Model.RvC;
+import mini_projet.PatMedservice.client.RvCRestClient;
+import mini_projet.PatMedservice.dto.MedecinDto;
+import mini_projet.PatMedservice.entity.Medecin;
 import lombok.AllArgsConstructor;
+import mini_projet.PatMedservice.repository.MedecinRepository;
 import org.springframework.web.bind.annotation.*;
-import repository.MedecinRepository;
 
 import java.util.List;
-
 @RestController
-@RequestMapping("/api/v1/medecin")
+@RequestMapping("/medecin")
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class MedecinController {
 
     private List<Medecin> medecins;
     private MedecinRepository medecinRepository ;
     private RvCRestClient rvCRestClient;
-
     @GetMapping("/medecins")
     public List<Medecin> getMedecins(){
         return medecinRepository.findAll();
     }
 
-    @GetMapping("/medecins/{id}")
-    public Medecin getMedecinsById(@PathVariable Long id){
-
-          Medecin medecin= medecinRepository.findById(String.valueOf(id)).get();
-        List<RvC> rdvs=rvCRestClient.getRendezVousById(medecin.getId());
-        medecin.setRdvs(rdvs);
-        return medecin;
+    @GetMapping("/{id}")
+    public MedecinDto getMedecinsById(@PathVariable Long id){
+        Medecin medecin= medecinRepository.findById(String.valueOf(id)).get();
+        List<RvC> rdvs=rvCRestClient.getRendezvousByMedecin(id);
+        MedecinDto medecinDto=new MedecinDto();
+        medecinDto.setId(medecin.getId());
+        medecinDto.setSpecialite(medecin.getSpecialite());
+        medecinDto.setEmail(medecin.getEmail());
+        medecinDto.setRdvs(rdvs);
+        return medecinDto;
     }
 
 
@@ -52,6 +55,7 @@ public class MedecinController {
     }
     @DeleteMapping("/{medecinId}")
     public void supprimerMedecin(@PathVariable Long medecinId) {
+
         medecins.removeIf(m -> m.getId()==(medecinId));
     }
 }
